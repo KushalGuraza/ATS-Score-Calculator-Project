@@ -12,11 +12,18 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
 # Downloading NLTK resources
-nltk.download('stopwords')
-nltk.download('punkt')
+# nltk.download('stopwords')
+# nltk.download('punkt_tab')
+# nltk.download('wordnet')
+
 
 # Function removes special characters and converts the text to lowercase
 def preprocess_text(text):
+
+    # Filter out short lines
+    lines = text.splitlines()
+    text = ' '.join([line for line in lines if len(line.split()) > 2])
+
     # Text normalization - Lowercasing, Removing special characters and numbers, replacing with space " " and removing extra spaces
     text = text.lower()
     text = re.sub(r'[^a-zA-Z\s]', '', text)
@@ -36,11 +43,12 @@ def preprocess_text(text):
     return ' '.join(text)
 
 def get_resume_score_and_missing_keywords(resume, job_description):
+
     # Preprocess the texts
     resume = preprocess_text(resume)
     job_description = preprocess_text(job_description)
     # print("\n" + resume + "\n")
-    print("\n" + job_description + "\n")
+    # print("\n" + job_description + "\n")
 
     # splitting the texts into set of unique keywords
     resume_words = set(resume.split())
@@ -53,18 +61,18 @@ def get_resume_score_and_missing_keywords(resume, job_description):
     text = [resume, job_description]
 
     # Create CountVectorizer object
-    # cv = CountVectorizer(stop_words='english')
-    # count_matrix = cv.fit_transform(text)
+    cv = CountVectorizer()
+    count_matrix = cv.fit_transform(text)
 
     # Calculate cosine similarity
-    # match_percentage = cosine_similarity(count_matrix)[0][1] * 100
+    match_percentage = cosine_similarity(count_matrix)[0][1] * 100
 
     # TF-IDF Vectorization to capture word importance
-    vectorizer = TfidfVectorizer()
-    tfidf_matrix = vectorizer.fit_transform(text)
+    # vectorizer = TfidfVectorizer()
+    # tfidf_matrix = vectorizer.fit_transform(text)
 
     # Compute cosine similarity between resume and job description
-    match_percentage = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])[0][0] * 100
+    # match_percentage = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])[0][0] * 100
 
     return round(match_percentage, 2), missing_keywords
 
