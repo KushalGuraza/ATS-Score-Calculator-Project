@@ -1,3 +1,3 @@
-# ATS-Score-Calculator-Project
+# ATS-Score-Calculator
 
 
